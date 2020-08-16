@@ -8,3 +8,10 @@ This is done for better organization and to avoid conflicts with other scripts.
 To apply a script, be sure to check `Include scripts from subdirectories` in the `Apply Script` dialog, or none of these will show up.
 
 More details on how to apply the scripts can be found in their respective descriptions.
+
+### Scripts
+
+#### Better Spell Learning - Create Spell Patch
+Creates a compatibility patch that allows custom spell mods to work with BSL.
+
+Can be applied to either a single mod, or your whole load order at once (which may take a minute or two).
