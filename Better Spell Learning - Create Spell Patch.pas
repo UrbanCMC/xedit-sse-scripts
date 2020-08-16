@@ -21,7 +21,7 @@ Const
   sBetterSpellLearningScript = 'SpellTomeReadScript';
 
 Var
-  BuildForLoadOrder, SkipSection: Boolean;
+  BuildForLoadOrder: Boolean;
   BslPlugin, PatchPlugin: IInterface;
   PatchedTomeCount, VMADSourceSpellTomeID: Integer;
 
@@ -72,19 +72,13 @@ End;
 Function Process(e: IInterface): Integer;
 Var
   spellReference: IInterface;
-  name: String;
   i: Integer;
 
 Begin
   If Signature(e) <> 'BOOK' Then Exit;
 
   If (Not IsWinningOverride(e)) And (BuildForLoadOrder) Then e := WinningOverride(e);
-  If Not ElementExists(e, 'FULL') Then Exit;
-
-  name := GetElementEditValues(e, 'FULL');
-
-  If pos('spell tome:', lowercase(name)) = 0 Then Exit;
-  If IsConvertedSpellTome(e) Then Exit;
+  If Not IsConvertableSpellTome(e) Then Exit;
 
   // Copy override of target tome into patch plugin
   e := wbCopyElementToFile(e, PatchPlugin, False, True);
@@ -137,11 +131,11 @@ Begin
   SetElementEditValues(e, 'CNAM', description);
 End;
 
-// Checks whether the specified tome has already been converted to BSL
-Function IsConvertedSpellTome(e: IInterface): Boolean;
+// Checks whether the specified element is a book that will teach a spell
+Function IsConvertableSpellTome(e: IInterface): Boolean;
 Begin
-  // Check for an attached script called 'SpellTomeReadScript'
-  Result := Assigned(GetScript(e, sBetterSpellLearningScript));
+  // Also check for attached script called 'SpellTomeReadScript'
+  Result := GetElementEditValues(e, 'DATA\Flags\Teaches Spell') = '1' And Not Assigned(GetScript(e, sBetterSpellLearningScript));
 End;
 
 // Sets the properties on the tome's script to values matching the specified spell
